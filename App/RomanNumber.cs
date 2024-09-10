@@ -22,6 +22,7 @@ namespace App
             "L" => new(50),
             "C" => new(100),
             "D" => new(500),
+            "1"=> throw new ArgumentException(),
             _ => new(1000),
         };
 
@@ -34,7 +35,8 @@ namespace App
             'L' => 50,
             'C' => 100,
             'D' => 500,
-            _ => 1000,
+            'M' => 1000,
+            _ => throw new ArgumentException($"'RomanNumber.DigitalValue': argument 'digit' has invalid value '{digit}'")
         };
     }
 }
