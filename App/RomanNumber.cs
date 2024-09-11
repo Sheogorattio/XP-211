@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
 using System.Security.Cryptography.X509Certificates;
 using System.Text;
 using System.Threading.Tasks;
@@ -11,20 +12,34 @@ namespace App
     public record RomanNumber(int Value)
     {
         // public int Value { get; } = Value;
-        public static RomanNumber Parse(string input) => input switch
+        public static RomanNumber Parse(string input)
         {
-            "II"=> new(2),
-            "III"=> new(3),
-            "N" => new(0),
-            "I" => new(1),
-            "V" => new(5),
-            "X" => new(10),
-            "L" => new(50),
-            "C" => new(100),
-            "D" => new(500),
-            "1"=> throw new ArgumentException(),
-            _ => new(1000),
-        };
+            int prevValue = 0;
+            int result = 0;
+            int position = 0;
+            foreach(char c in input)
+            {
+                try
+                {
+                   int currentValue = DigitalValue(c);
+                    if (currentValue >prevValue)
+                    {
+                        result += currentValue - 2 * prevValue;
+                    }
+                    else
+                    {
+                        result += currentValue;
+                    }
+                    prevValue = currentValue;
+                }
+                catch
+                {
+                    throw new FormatException($"RomanNumber.Parse: invalid input {input} has illegal char '{c}' at position {position}");
+                }
+                position++;
+            }
+           return new RomanNumber(result);
+        }
 
         public static int DigitalValue(char digit) => digit switch
         {
@@ -36,7 +51,7 @@ namespace App
             'C' => 100,
             'D' => 500,
             'M' => 1000,
-            _ => throw new ArgumentException($"'RomanNumber.DigitalValue': argument 'digit' has invalid value '{digit}'")
+            _ => throw new ArgumentException($"'RomanNumber.DigitalValue': argument 'digit' has invalid value '{digit}'") { Source= "RomanNumber.DigitalValue" }
         };
     }
 }

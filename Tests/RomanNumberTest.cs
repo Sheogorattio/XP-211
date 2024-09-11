@@ -9,21 +9,59 @@ namespace Tests
         [TestMethod]
         public void ParseTest()
         {
-            Dictionary<String, int> testCases = new()
+            //Dictionary<String, int> testCases = new()
+            //{
+            //   { "I", 1 },
+            //   { "II", 2 },
+            //   { "III", 3 },
+            //    //{ "N", 0},
+            //    //{ "V", 5},
+            //    //{ "X", 10},
+            //    //{ "L", 50},
+            //    //{ "C", 100},
+            //    //{ "M", 1000 },
+            //};
+            //foreach (var _testCase in testCases)
+            //{
+            //    Assert.AreEqual(_testCase.Value, RomanNumber.Parse(_testCase.Key).Value, $"Roman value {_testCase.Value} -> {_testCase.Key}");
+            //}
+
+            Dictionary<String, int> validCases = new()
             {
-                { "I", 1 },
-                { "II", 2 },
-                { "III", 3 },
-                { "N", 0},
-                { "V", 5},
-                { "X", 10},
-                { "L", 50},
-                { "C", 100},
-                { "M", 1000 },
+                {"IV", 4},    
+                {"IX", 9},      
+                {"XL", 40},     
+                {"XC", 90},     
+                {"CD", 400},   
+                {"CM", 900},   
+                {"XVI", 16},    
+                {"LXV", 65},   
+                {"XCIX", 99},  
+                {"DCCC", 800},  
+                {"MMXXIV", 2024} 
             };
-            foreach (var testCase in testCases) {
-                Assert.AreEqual(testCase.Value, RomanNumber.Parse(testCase.Key).Value, $"Roman value {testCase.Value} -> {testCase.Key}");
+            foreach (var validCase in validCases)
+            {
+                Assert.AreEqual(validCase.Value, RomanNumber.Parse(validCase.Key).Value, $"Valid Parser Test '{validCase.Key}' => {validCase.Value}");
             }
+
+            String [][]testCases =
+            [
+                ["IW", "W", "1"],
+                ["IS", "S", "1"],
+                ["IXW", "W", "2"],
+                ["IEX", "E", "1"],
+                ["CDX1", "1", "3"]
+            ];
+
+            foreach(var testCase in testCases)
+            {
+                var ex = Assert.ThrowsException<FormatException>(() => { RomanNumber.Parse(testCase[0]); }, $"RomanNumber.Parse('{testCase[0]}') must throw FormatException");
+                Assert.IsTrue(ex.Message.Contains("RomanNumber.Parse"), $"ex.Message must contain origin (class and method):" + $"testCase='{testCase[0]}', ex.message='{ex.Message}'");
+                Assert.IsTrue(ex.Message.Contains($"{testCase[0]}"), $"ex.Message must contain input value '{testCase[0]}':" + $"testCase='{testCase[0]}', ex.message='{ex.Message}'");
+                Assert.IsTrue(ex.Message.Contains($"{testCase[1]}") && ex.Message.Contains($"position {testCase[2]}"), $"ex.Message must contain error char '{testCase[1]}' and its position {testCase[2]}: " + $"testCase='{testCase[0]}', ex.message='{ex.Message}'");
+            }
+
         }
 
         [TestMethod]
