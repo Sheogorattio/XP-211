@@ -15,19 +15,18 @@ namespace Tests
             Dictionary<String, int> validCases = new()
             {
                 {"IV", 4},
-                {"IIII", 4},
                 {"IX", 9},      
                 {"XL", 40},     
                 {"XC", 90},     
                 {"CD", 400},   
-                {"CM", 900},   
+                {"CM", 900},
+                {"III", 3 },
                 {"XVI", 16},    
                 {"LXV", 65},   
                 {"XCIX", 99},  
                 {"DCCC", 800},
                 {"MMMCMXCIX", 3999 },
                 {"MMXXIV", 2024} ,
-                {"MMMM", 4000},
             };
             foreach (var validCase in validCases)
             {

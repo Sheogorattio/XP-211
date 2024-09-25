@@ -15,10 +15,11 @@ namespace App
         public static RomanNumber Parse(string input)
         {
             CheckSymbols(input);
-
-
+            
             String argValue = input;
             input = input.Trim();
+
+            CheckSequence(input);
 
             int prevValue = 0;
             int result = 0;
@@ -50,25 +51,6 @@ namespace App
                     throw new FormatException($"RomanNumber.Parse('{argValue}') error: 'digit 'N' must not be in number' in position {position}");
                 }
 
-                //!--------------------------------------------------------------------------------------------------------
-
-                List<char> repetableSymbols = new List<char>() { 'I', 'X', 'C', 'M' };
-                List<char> unrepeatableSymbols = new List<char>() { 'V', 'L', 'D' };
-                int lessCount = 0;
-
-                for (int i = 0; i < position; i++)
-                {
-                    if (DigitalValue(input[i]) < currentValue)
-                    {
-                        lessCount++;
-                    }
-                    else break;
-                    if (lessCount > 1)
-                    {
-                        throw new FormatException($"RomanNumber.Parse({input}) error: more than one less digit before {input[position]} at position {position}. Invalid input {input}");
-                    }
-                }
-
                 prevValue = currentValue;
                 position++;
             }
@@ -87,6 +69,32 @@ namespace App
             'M' => 1000,
             _ => throw new ArgumentException($"'RomanNumber.DigitalValue': argument 'digit' has invalid value '{digit}'") { Source = "RomanNumber.DigitalValue" }
         };
+
+        public static void CheckSequence(string input)
+        {
+            List<char> repetableSymbols = new List<char>() { 'I', 'X', 'C', 'M' };
+            List<char> unrepeatableSymbols = new List<char>() { 'V', 'L', 'D' };
+            int lessCount = 0;
+
+            for (int j = 0; j < input.Length; j++)
+            {
+                int position = j;
+                int currentValue = DigitalValue(input[j]);
+                for (int i = 0; i < position; i++)
+                {
+                    if (DigitalValue(input[i]) < currentValue)
+                    {
+                        lessCount++;
+                    }
+                    else break;
+                    if (lessCount > 1)
+                    {
+                        throw new FormatException($"RomanNumber.Parse({input}) error: more than one less digit before {input[position]} at position {position}. Invalid input {input}");
+                    }
+                }
+                lessCount = 0;
+            }
+        }
 
         public static void CheckSymbols(String input)
         {
